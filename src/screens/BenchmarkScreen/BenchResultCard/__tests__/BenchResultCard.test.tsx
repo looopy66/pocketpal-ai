@@ -192,7 +192,7 @@ describe('BenchResultCard', () => {
     fireEvent.press(leaderboardLink);
 
     expect(Linking.openURL).toHaveBeenCalledWith(
-      'https://huggingface.co/spaces/a-ghorbani/ai-phone-leaderboard',
+      'https://hf-mirror.com/spaces/a-ghorbani/ai-phone-leaderboard',
     );
   });
 
@@ -350,7 +350,7 @@ describe('BenchResultCard', () => {
     fireEvent.press(leaderboardText);
 
     expect(Linking.openURL).toHaveBeenCalledWith(
-      'https://huggingface.co/spaces/a-ghorbani/ai-phone-leaderboard',
+      'https://hf-mirror.com/spaces/a-ghorbani/ai-phone-leaderboard',
     );
   });
 
