@@ -63,7 +63,7 @@ describe('errors.ts', () => {
       const axiosError = {
         isAxiosError: true,
         response: {status: 401},
-        config: {url: 'https://huggingface.co/api/models'},
+        config: {url: 'https://hf-mirror.com/api/models'},
       };
       jest.spyOn(axios, 'isAxiosError').mockReturnValue(true);
 
@@ -95,7 +95,7 @@ describe('errors.ts', () => {
       const axiosError = {
         isAxiosError: true,
         response: {status: 502},
-        config: {url: 'https://huggingface.co/api'},
+        config: {url: 'https://hf-mirror.com/api'},
       };
       jest.spyOn(axios, 'isAxiosError').mockReturnValue(true);
 
@@ -110,7 +110,7 @@ describe('errors.ts', () => {
       const axiosError = {
         isAxiosError: true,
         code: 'ECONNABORTED',
-        config: {url: 'https://huggingface.co/api'},
+        config: {url: 'https://hf-mirror.com/api'},
       };
       jest.spyOn(axios, 'isAxiosError').mockReturnValue(true);
 
@@ -124,7 +124,7 @@ describe('errors.ts', () => {
       const axiosError = {
         isAxiosError: true,
         code: 'ERR_NETWORK',
-        config: {url: 'https://huggingface.co/api'},
+        config: {url: 'https://hf-mirror.com/api'},
       };
       jest.spyOn(axios, 'isAxiosError').mockReturnValue(true);
 
