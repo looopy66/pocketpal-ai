@@ -72,7 +72,7 @@ describe('ModelSettingsSheet', () => {
     params: 1000000,
     isDownloaded: true,
     downloadUrl: 'https://example.com/model',
-    hfUrl: 'https://huggingface.co/test-model',
+    hfUrl: 'https://hf-mirror.com/test-model',
     progress: 100,
     filename: 'test-model.bin',
     isLocal: false,
