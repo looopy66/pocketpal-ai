@@ -54,18 +54,15 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Check out the repository
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Cache node_modules
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
 
-      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -75,23 +72,18 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      # Step 3: Install dependencies and iOS Pods
       - name: Install dependencies
         run: yarn install
 
-      # Step 4: Validate l10n files
       - name: Validate l10n files
         run: node scripts/validate-l10n.js
 
-      # Step 5: Run linters (ESLint)
       - name: Run ESLint
         run: yarn lint
 
-      # Step 5: Run TypeScript type checks
       - name: Run TypeScript type check
         run: yarn typecheck
 
-      # Step 6: Run unit tests (Jest)
       - name: Run unit tests
         run: yarn test --coverage
 
@@ -103,14 +95,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.21.0'
           cache: 'yarn'
 
-      # Cache node_modules
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -122,6 +112,33 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      # ============================================================
+      # Patch llama.rn to separate Hexagon and OpenCL libraries
+      # This fixes qwen3.5 crash when using OpenCL with Hexagon SDK
+      # ============================================================
+      - name: Patch llama.rn CMakeLists.txt
+        run: |
+          echo "Patching llama.rn to separate Hexagon and OpenCL libraries..."
+          
+          CMAKE_FILE="node_modules/llama.rn/android/src/main/CMakeLists.txt"
+          RNLLAMA_CMAKE_FILE="node_modules/llama.rn/android/src/main/rnllama/CMakeLists.txt"
+          
+          # Patch JNI CMakeLists.txt - add separated libraries after the combined one
+          if grep -q "rnllama_jni_v8_2_dotprod_i8mm_hexagon_opencl" "$CMAKE_FILE"; then
+            echo "Patching $CMAKE_FILE..."
+            sed -i '/build_rnllama_jni("rnllama_jni_v8_2_dotprod_i8mm_hexagon_opencl"/a\    # Separated libraries for better compatibility with qwen3.5\n    build_rnllama_jni("rnllama_jni_v8_2_dotprod_i8mm_hexagon" "rnllama_v8_2_dotprod_i8mm_hexagon" "arm" "-march=armv8.2-a+dotprod+i8mm")\n    build_rnllama_jni("rnllama_jni_v8_2_dotprod_i8mm_opencl" "rnllama_v8_2_dotprod_i8mm_opencl" "arm" "-march=armv8.2-a+dotprod+i8mm")' "$CMAKE_FILE"
+            echo "✓ Patched $CMAKE_FILE"
+          fi
+          
+          # Patch rnllama CMakeLists.txt - add separated libraries after the combined one
+          if grep -q 'build_rnllama_library("rnllama_v8_2_dotprod_i8mm_hexagon_opencl"' "$RNLLAMA_CMAKE_FILE"; then
+            echo "Patching $RNLLAMA_CMAKE_FILE..."
+            sed -i '/build_rnllama_library("rnllama_v8_2_dotprod_i8mm_hexagon_opencl"/a\    # Separated libraries for better compatibility with qwen3.5\n    build_rnllama_library("rnllama_v8_2_dotprod_i8mm_hexagon" "arm" "-march=armv8.2-a+dotprod+i8mm")\n    build_rnllama_library("rnllama_v8_2_dotprod_i8mm_opencl" "arm" "-march=armv8.2-a+dotprod+i8mm")' "$RNLLAMA_CMAKE_FILE"
+            echo "✓ Patched $RNLLAMA_CMAKE_FILE"
+          fi
+          
+          echo "Patch complete!"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -225,7 +242,6 @@ jobs:
       - name: Create dummy release keystore for CI
         working-directory: android/app
         run: |
-          # Generate a dummy keystore for CI builds
           keytool -genkeypair -v \
             -storetype PKCS12 \
             -keystore pocketpal-release-key.keystore \
@@ -238,9 +254,9 @@ jobs:
             -dname "CN=CI Build, OU=CI, O=PocketPal, L=CI, S=CI, C=US"
 
       # ============================================================
-      # Build Android Release (arm64-v8a only)
+      # Build Android Release
       # ============================================================
-      - name: Build Android Release (arm64-v8a only)
+      - name: Build Android Release
         working-directory: android
         env:
           APP_RELEASE_STORE_PASSWORD: dummy-ci-password
