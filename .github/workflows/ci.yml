@@ -130,6 +130,52 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      # ============================================================
+      # Hexagon SDK Setup for NPU/DSP Acceleration
+      # ============================================================
+      - name: Cache Hexagon SDK
+        id: cache-hexagon-sdk
+        uses: actions/cache@v3
+        with:
+          path: ~/.hexagon-sdk
+          key: ${{ runner.os }}-hexagon-sdk-6.4.0.2
+
+      - name: Download and Install Hexagon SDK
+        if: steps.cache-hexagon-sdk.outputs.cache-hit != 'true'
+        run: |
+          echo "Downloading Hexagon SDK v6.4.0.2..."
+          mkdir -p ~/.hexagon-sdk
+          curl -L -o /tmp/hex-sdk.tar.xz \
+            "https://github.com/snapdragon-toolchain/hexagon-sdk/releases/download/v6.4.0.2/hexagon-sdk-v6.4.0.2-amd64-lnx.tar.xz"
+          
+          echo "Extracting Hexagon SDK..."
+          tar -xaf /tmp/hex-sdk.tar.xz -C ~/.hexagon-sdk
+          
+          echo "Cleaning up..."
+          rm /tmp/hex-sdk.tar.xz
+          
+          echo "Hexagon SDK installed successfully!"
+          ls -la ~/.hexagon-sdk/6.4.0.2/
+
+      - name: Verify Hexagon SDK Installation
+        run: |
+          echo "Verifying Hexagon SDK installation..."
+          HEXAGON_SDK_ROOT="$HOME/.hexagon-sdk/6.4.0.2"
+          HEXAGON_TOOLS_ROOT="$HOME/.hexagon-sdk/6.4.0.2/tools/HEXAGON_Tools/19.0.04"
+          
+          if [ -d "$HEXAGON_SDK_ROOT" ] && [ -d "$HEXAGON_TOOLS_ROOT" ]; then
+            echo "✅ Hexagon SDK detected — enabling DSP build"
+            echo "SDK Root: $HEXAGON_SDK_ROOT"
+            echo "Tools Root: $HEXAGON_TOOLS_ROOT"
+          else
+            echo "🚫 Hexagon SDK not found — building CPU-only"
+            echo "SDK Root exists: $([ -d "$HEXAGON_SDK_ROOT" ] && echo 'yes' || echo 'no')"
+            echo "Tools Root exists: $([ -d "$HEXAGON_TOOLS_ROOT" ] && echo 'yes' || echo 'no')"
+          fi
+
+      # ============================================================
+      # Build Configuration
+      # ============================================================
       - name: Create dummy google-services.json for CI
         run: |
           cat > android/app/google-services.json << 'EOL'
@@ -191,15 +237,24 @@ jobs:
             -keypass dummy-ci-password \
             -dname "CN=CI Build, OU=CI, O=PocketPal, L=CI, S=CI, C=US"
 
-      - name: Build Android Release
+      # ============================================================
+      # Build Android Release (arm64-v8a only)
+      # ============================================================
+      - name: Build Android Release (arm64-v8a only)
         working-directory: android
         env:
           APP_RELEASE_STORE_PASSWORD: dummy-ci-password
           APP_RELEASE_KEY_PASSWORD: dummy-ci-password
-        run: ./gradlew assembleRelease
+          # Hexagon SDK environment variables
+          HEXAGON_SDK_ROOT: ${{ github.workspace }}/../.hexagon-sdk/6.4.0.2
+          HEXAGON_TOOLS_ROOT: ${{ github.workspace }}/../.hexagon-sdk/6.4.0.2/tools/HEXAGON_Tools/19.0.04
+        run: |
+          # Build only arm64-v8a architecture
+          ./gradlew assembleRelease \
+            -PreactNativeArchitectures=arm64-v8a
 
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: android-release-apk
+          name: android-release-apk-arm64
           path: android/app/build/outputs/apk/release/app-release.apk
