@@ -33,7 +33,7 @@ describe('DownloadErrorDialog', () => {
   const mockModel = createModel({
     id: 'test-model',
     name: 'Test Model',
-    hfUrl: 'https://huggingface.co/test/test-model',
+    hfUrl: 'https://hf-mirror.com/test/test-model',
   });
 
   beforeEach(() => {
@@ -92,7 +92,7 @@ describe('DownloadErrorDialog', () => {
     );
     fireEvent.press(hfButton);
     expect(Linking.openURL).toHaveBeenCalledWith(
-      'https://huggingface.co/test/test-model',
+      'https://hf-mirror.com/test/test-model',
     );
 
     // Check retry button works
