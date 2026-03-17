@@ -22,7 +22,7 @@ import {
  * full: Whether to fetch most model data, such as all tags, the files, etc.
  * config: Whether to also fetch the repo config.
  *
- * @see https://huggingface.co/docs/api-reference/api-endpoints#get-models
+ * @see https://hf-mirror.com/docs/api-reference/api-endpoints#get-models
  */
 export async function fetchModels({
   search,
