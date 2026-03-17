@@ -108,8 +108,8 @@ export const mockBasicModel: Model = {
   size: 2 * 10 ** 9,
   params: 2 * 10 ** 9,
   isDownloaded: false,
-  downloadUrl: 'https://huggingface.co/test/test-model-1',
-  hfUrl: 'https://huggingface.co/test/test-model-1',
+  downloadUrl: 'https://hf-mirror.com/test/test-model-1',
+  hfUrl: 'https://hf-mirror.com/test/test-model-1',
   progress: 0,
   filename: 'test-model-1.gguf',
   isLocal: false,
@@ -171,14 +171,14 @@ export const mockHFModelFiles1: ModelFile[] = [
   {
     rfilename: 'hf-model-name-1.Q4_K_M.gguf',
     size: deviceInfo.freeDiskStorage * 0.5, // can fit in disk
-    url: 'https://huggingface.co/owner/hf-model-name-1/resolve/main/hf-model-name-1.Q4_K_M.gguf',
+    url: 'https://hf-mirror.com/owner/hf-model-name-1/resolve/main/hf-model-name-1.Q4_K_M.gguf',
     oid: 'sha256:abc123def456',
     canFitInStorage: true,
   },
   {
     rfilename: 'hf-model-name-1.Q5_K_M.gguf',
     size: deviceInfo.freeDiskStorage * 1.5, // can't fit in disk
-    url: 'https://huggingface.co/owner/hf-model-name-1/resolve/main/hf-model-name-1.Q5_K_M.gguf',
+    url: 'https://hf-mirror.com/owner/hf-model-name-1/resolve/main/hf-model-name-1.Q5_K_M.gguf',
     oid: 'sha256:xyz789uvw123',
     canFitInStorage: false,
   },
@@ -188,14 +188,14 @@ export const mockHFModelFiles2: ModelFile[] = [
   {
     rfilename: 'hf-model-name-2.Q4_K_M.gguf',
     size: deviceInfo.freeDiskStorage * 0.3,
-    url: 'https://huggingface.co/owner/hf-model-name-2/resolve/main/hf-model-name-2.Q4_K_M.gguf',
+    url: 'https://hf-mirror.com/owner/hf-model-name-2/resolve/main/hf-model-name-2.Q4_K_M.gguf',
     oid: 'sha256:def456ghi789',
     canFitInStorage: true,
   },
   {
     rfilename: 'hf-model-name-2.Q5_K_M.gguf',
     size: deviceInfo.freeDiskStorage * 0.6,
-    url: 'https://huggingface.co/owner/hf-model-name-2/resolve/main/hf-model-name-2.Q5_K_M.gguf',
+    url: 'https://hf-mirror.com/owner/hf-model-name-2/resolve/main/hf-model-name-2.Q5_K_M.gguf',
     oid: 'sha256:jkl012mno345',
     canFitInStorage: true,
   },
@@ -242,7 +242,7 @@ export const mockHFModel1: HuggingFaceModel = {
   library_name: 'llama',
   createdAt: '2024-01-01',
   model_id: 'owner/hf-model-name-1',
-  url: 'https://huggingface.co/owner/hf-model-name-1',
+  url: 'https://hf-mirror.com/owner/hf-model-name-1',
   siblings: mockHFModelFiles1,
   specs: mockGGUFSpecs1,
 };
@@ -256,7 +256,7 @@ export const mockHFModel2: HuggingFaceModel = {
   likes: 2000,
   trendingScore: 0.98,
   tags: ['mistral', 'gguf', 'chat'],
-  url: 'https://huggingface.co/owner/hf-model-name-2',
+  url: 'https://hf-mirror.com/owner/hf-model-name-2',
   siblings: mockHFModelFiles2,
   specs: mockGGUFSpecs2,
 };
