@@ -46,7 +46,7 @@ describe('HFStore', () => {
 
       expect(hfStore.models).toHaveLength(2);
       expect(hfStore.models[0].url).toBe(
-        'https://huggingface.co/owner/hf-model-name-1',
+        'https://hf-mirror.com/owner/hf-model-name-1',
       );
       expect(hfStore.nextPageLink).toBe('next-page-url');
       expect(hfStore.error).toBe(null);
