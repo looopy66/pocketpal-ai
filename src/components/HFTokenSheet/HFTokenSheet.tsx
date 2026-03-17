@@ -99,7 +99,7 @@ export const HFTokenSheet: React.FC<HFTokenSheetProps> = observer(
     };
 
     const handleTokenWebsite = () => {
-      Linking.openURL('https://huggingface.co/settings/tokens');
+      Linking.openURL('https://hf-mirror.com/settings/tokens');
     };
 
     const toggleSecureEntry = () => {
