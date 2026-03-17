@@ -106,7 +106,7 @@ describe('HFTokenSheet', () => {
 
     // Verify the Linking API was called with the correct URL
     expect(mockOpenURL).toHaveBeenCalledWith(
-      'https://huggingface.co/settings/tokens',
+      'https://hf-mirror.com/settings/tokens',
     );
   });
 
