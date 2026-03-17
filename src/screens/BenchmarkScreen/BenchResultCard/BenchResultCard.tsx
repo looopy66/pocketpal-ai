@@ -74,7 +74,7 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
 
   const openLeaderboard = () => {
     Linking.openURL(
-      'https://huggingface.co/spaces/a-ghorbani/ai-phone-leaderboard',
+      'https://hf-mirror.com/spaces/a-ghorbani/ai-phone-leaderboard',
     );
   };
 
